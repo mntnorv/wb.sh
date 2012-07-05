@@ -10,21 +10,42 @@
 ###    OPTIONS    ###
 #####################
 
-# Login
+### Login
+
 USER=
 PASS=
 
-# Directory to downlaod images to
+# Directory to download images to
 DIR=~/Documents/Walls/
 
-# Remove old images
+# REMOVE_OLD
+# 1 to remove all images from $DIR
+# 0 to leave images in $DIR
 REMOVE_OLD=1
 
-# Search options
+### Search options
+
+# QUERY
+# String to search for
 QUERY=landscape
+
+# SORT_BY
+# Accepted values:
+# date, views, favs, relevance
 SORT_BY=date
+
+# SORT_ORDER
+# Accepted values:
+# asc, desc
 SORT_ORDER=desc
+
+# IMGS_PER_PAGE
+# Accepted values:
+# 20, 32, 40, 60
 IMGS_PER_PAGE=20
+
+# TOTAL_IMGS
+# Should be a multiple of IMGS_PER_PAGE
 TOTAL_IMGS=20
 
 #####################
