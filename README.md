@@ -6,7 +6,11 @@ A user-friendly wallbase.cc image download script using curl
 Features
 ========
 
-- Ability to choose any sort order
+- Ability to choose these search options:
+	- Sort by
+	- Sort order
+	- Purity
+	- Boards
 - Unlimited image downloads
 - Download NSFW content (login required)
 - Ignore list (ignore certain images)
