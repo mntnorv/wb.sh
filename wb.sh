@@ -23,6 +23,11 @@ DIR=~/Documents/Walls/
 # 0 to leave images in $DIR
 REMOVE_OLD=1
 
+# DOWNLOAD
+# 1 - download images
+# 0 - only get image links and save them to imgs.txt
+DOWNLOAD=0
+
 ### Search options
 
 # QUERY
@@ -62,10 +67,19 @@ TOTAL_IMGS=20
 function login {
 	# Login
 	echo "Logging in..."
-	curl -c $3 -d "usrname=$1&pass=$2&nopass_email=Type+in+your+e-mail+and+press+enter&nopass=0&1=1" -e "http://wallbase.cc/start/" http://wallbase.cc/user/login
+	# Check arguments
+	if [ $# -lt 3 ] || [ $1 == '' ] || [ $2 == '' ]; then
+		echo "Error logging in"
+		exit
+	fi
+	# Check login errors
+	if curl -s -c $3 -d "usrname=$1&pass=$2&nopass_email=Type+in+your+e-mail+and+press+enter&nopass=0&1=1" -e "http://wallbase.cc/start/" http://wallbase.cc/user/login | grep "Wrong username or password." > /dev/null; then
+		echo "Error logging in"
+		exit
+	fi
 	# Get permission to NSFW
 	echo "Getting NSFW permission..."
-	curl -b $3 -c $3 -e "http://wallbase.cc/start/" http://wallbase.cc/user/adult_confirm/1
+	curl -s -b $3 -c $3 -e "http://wallbase.cc/start/" http://wallbase.cc/user/adult_confirm/1
 }
 
 #
@@ -96,8 +110,10 @@ function getURLs {
 		number="$(echo $img | sed  's .\{29\}  ')"
 		# If not in ignore list
 		if ! cat $4 | grep "$number" >/dev/null; then
+			if [ $DOWNLOAD == 1 ]; then
+				echo "-O" >> $2
+			fi
 			# Save exact image URL
-			echo "-O" >> $2
 			curl -s -b $3 -e "http://wallbase.cc" $img | egrep -o "http:.*(png|jpg)" | egrep "wallbase2|imageshack.us|ovh.net" >> $2
 		fi
 		# Increment imgNum
@@ -124,7 +140,7 @@ ignore=ignore.txt
 # Login
 login $USER $PASS $cookies
 
-echo "Getting URLs"
+echo "Getting URLs:"
 
 # Current page number
 pageNum=1
@@ -148,8 +164,17 @@ if [ $REMOVE_OLD == 1 ]; then
 fi
 
 # Download images
-cat $urls | xargs curl
+if [ $DOWNLOAD == 1 ]; then
+	echo
+	echo "Downloading..."
+	cat $urls | xargs curl
+fi
 
 # Clean up
 rm $cookies
-rm $urls
+
+if [ $DOWNLOAD == 1 ]; then
+	rm $urls
+fi
+
+echo "Done."
