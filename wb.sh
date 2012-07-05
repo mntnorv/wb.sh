@@ -26,13 +26,31 @@ REMOVE_OLD=1
 # DOWNLOAD
 # 1 - download images
 # 0 - only get image links and save them to imgs.txt
-DOWNLOAD=0
+DOWNLOAD=1
 
 ### Search options
 
 # QUERY
 # String to search for
 QUERY=landscape
+
+# PURITY
+# 100 - SFW
+# 010 - Sketchy
+# 001 - NSFW
+# Can be combined:
+# 110 - SFW and Sketchy
+# etc.
+PURITY=100
+
+# BOARDS
+# 1 - Anime / Manga
+# 2 - Wallpapers / General
+# 3 - High Resolution
+# Can be combined:
+# 12 - Anime / Manga AND Wallpapers / General
+# etc.
+BOARDS=123
 
 # SORT_BY
 # Accepted values:
@@ -149,7 +167,7 @@ pageNum=1
 for (( count= 0; count< "$TOTAL_IMGS"; count=count+"$IMGS_PER_PAGE" ));
 do
 	# Get search page
-	curl -s -b $cookies -d "query=$QUERY&board=123&nsfw=100&res=0&res_opt=gteq&aspect=0&orderby=$SORT_BY&orderby_opt=$SORT_ORDER&thpp=20&section=wallpapers&1=1" -e "http://wallbase.cc" http://wallbase.cc/search/$count > $page
+	curl -s -b $cookies -d "query=$QUERY&board=$BOARDS&nsfw=$PURITY&res=0&res_opt=gteq&aspect=0&orderby=$SORT_BY&orderby_opt=$SORT_ORDER&thpp=20&section=wallpapers&1=1" -e "http://wallbase.cc" http://wallbase.cc/search/$count > $page
 	# Get URLs
 	getURLs $page $urls $cookies $ignore $pageNum
 	rm $page
