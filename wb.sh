@@ -11,64 +11,29 @@
 #####################
 
 ### Login
-
 USER=
 PASS=
 
-# Directory to download images to
+### Download options
 DIR=~/Documents/Walls/
-
-# REMOVE_OLD
-# 1 to remove all images from $DIR
-# 0 to leave images in $DIR
 REMOVE_OLD=1
-
-# DOWNLOAD
-# 1 - download images
-# 0 - only get image links and save them to imgs.txt
 DOWNLOAD=1
 
 ### Search options
+TYPE=search
 
-# QUERY
-# String to search for
+# search
 QUERY=landscape
+# color
+COLOR_R=0
+COLOR_G=0
+COLOR_B=0
 
-# PURITY
-# 100 - SFW
-# 010 - Sketchy
-# 001 - NSFW
-# Can be combined:
-# 110 - SFW and Sketchy
-# etc.
 PURITY=100
-
-# BOARDS
-# 1 - Anime / Manga
-# 2 - Wallpapers / General
-# 3 - High Resolution
-# Can be combined:
-# 12 - Anime / Manga AND Wallpapers / General
-# etc.
 BOARDS=123
-
-# SORT_BY
-# Accepted values:
-# date, views, favs, relevance
 SORT_BY=date
-
-# SORT_ORDER
-# Accepted values:
-# asc, desc
 SORT_ORDER=desc
-
-# IMGS_PER_PAGE
-# Accepted values:
-# 20, 32, 40, 60
 IMGS_PER_PAGE=20
-
-# TOTAL_IMGS
-# Should be a multiple of IMGS_PER_PAGE
 TOTAL_IMGS=20
 
 #####################
@@ -155,6 +120,10 @@ urls=imgs.txt
 page=imgs.html
 ignore=ignore.txt
 
+# POST and URL
+post=""
+url=""
+
 # Login
 login $USER $PASS $cookies
 
@@ -163,11 +132,20 @@ echo "Getting URLs:"
 # Current page number
 pageNum=1
 
+# Save post data and URL
+if [ $TYPE == search ]; then
+	post="query=$QUERY&board=$BOARDS&nsfw=$PURITY&res=0&res_opt=gteq&aspect=0&orderby=$SORT_BY&orderby_opt=$SORT_ORDER&thpp=20&section=wallpapers"
+	url=http://wallbase.cc/search
+elif [ $TYPE == color ]; then
+	post="board=$BOARDS&nsfw=$PURITY&res=0&res_opt=gteq&aspect=0&orderby=$SORT_BY&orderby_opt=$SORT_ORDER&thpp=20"
+	url=http://wallbase.cc/search/color/$COLOR_R/$COLOR_G/$COLOR_B
+fi
+
 # Get all URLs
 for (( count= 0; count< "$TOTAL_IMGS"; count=count+"$IMGS_PER_PAGE" ));
 do
 	# Get search page
-	curl -s -b $cookies -d "query=$QUERY&board=$BOARDS&nsfw=$PURITY&res=0&res_opt=gteq&aspect=0&orderby=$SORT_BY&orderby_opt=$SORT_ORDER&thpp=20&section=wallpapers&1=1" -e "http://wallbase.cc" http://wallbase.cc/search/$count > $page
+	curl -s -b $cookies -d $post -e "http://wallbase.cc" $url/$count > $page
 	# Get URLs
 	getURLs $page $urls $cookies $ignore $pageNum
 	rm $page
