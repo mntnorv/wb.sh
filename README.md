@@ -46,8 +46,6 @@ Search options
 - **search** normal search (string)
 - **color** search by dominating color
 
-**QUERY** the string to search for when TYPE=search
+**QUERY** the string to search for when `TYPE=search`
 
-**COLOR_R, COLOR_G, COLOR_B** R G B components of the search color when TYPE=color
-
-Accepted values: 0 - 255
+**COLOR_R, COLOR_G, COLOR_B** R G B components of the search color when `TYPE=color`. Accepted values: *0 - 255*
