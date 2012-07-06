@@ -23,5 +23,5 @@ Options
 Login
 -----
 
-*USER, PASS*
+**USER, PASS**
 wallbase.cc username and password for operations that require login (eg. downloading NSFW content)
