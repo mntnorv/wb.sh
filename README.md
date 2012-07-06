@@ -16,3 +16,12 @@ Features
 - Download NSFW content (login required)
 - Ignore list (ignore certain images)
 - Only get URLs and save them to a file
+
+Options
+=======
+
+Login
+-----
+
+*USER, PASS*
+wallbase.cc username and password for operations that require login (eg. downloading NSFW content)
