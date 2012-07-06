@@ -25,3 +25,14 @@ Login
 
 **USER, PASS**
 wallbase.cc username and password for operations that require login (eg. downloading NSFW content)
+
+Download options
+----------------
+
+**DIR** directory to download images to
+
+**REMOVE_OLD** option to remove all images from DIR
+
+Accepted values:
+ - *1* removes all *.jpg and *.png images from DIR
+ - *0* leaves all images in DIR
