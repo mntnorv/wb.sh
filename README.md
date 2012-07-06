@@ -11,6 +11,7 @@ Features
 	- Sort order
 	- Purity
 	- Boards
+- Search by color
 - Unlimited image downloads
 - Download NSFW content (login required)
 - Ignore list (ignore certain images)
