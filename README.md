@@ -39,7 +39,7 @@ option to remove all images from DIR
 
 **DOWNLOAD**:
 option to download or only get image URLs
-- `1` - downloads images accorting to options
+- `1` - downloads images according to options
 - `0` - only gets images links and saves them to "imgs.txt"
 
 Search options
