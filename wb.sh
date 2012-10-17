@@ -123,7 +123,7 @@ function getURLs {
 #####################
 
 # Save current dir
-scriptDir=$(pwd)
+scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Change directory to the specified one
 cd $DIR
