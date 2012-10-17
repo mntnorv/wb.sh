@@ -96,7 +96,7 @@ function getURLs {
 		if ! cat $4 | grep "$number" >/dev/null; then
 			# Save exact image URL
 			# curl -s -b $3 -e "http://wallbase.cc" $img | egrep -o "http:.*(png|jpg)" | egrep "wallbase2|imageshack.us|ovh.net" >> $2
-			code=$(curl -s -b $3 -e "http://wallbase.cc" $img | egrep -o "B\('\w+?'\)")
+			code=$(curl -s -b $3 -e "http://wallbase.cc" $img | egrep -o "B\('(\w|=|\+|/)+?'\)")
 			length=${#code}
 			length=$(($length - 5))
 			url=$("$6/wbdecode" ${code:3:$length})
