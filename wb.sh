@@ -17,7 +17,7 @@ PASS=
 ### Download options
 DIR=~/Documents/Walls/
 REMOVE_OLD=1
-DOWNLOAD=0
+DOWNLOAD=1
 
 ### Search options
 TYPE=search
@@ -25,12 +25,12 @@ TYPE=search
 # search
 QUERY=landscape
 # color
-COLOR_R=0
-COLOR_G=0
-COLOR_B=0
+COLOR_R=64
+COLOR_G=87
+COLOR_B=10
 
 PURITY=100
-BOARDS=123
+BOARDS=23
 SORT_BY=date
 SORT_ORDER=desc
 IMGS_PER_PAGE=20
@@ -73,6 +73,7 @@ function login {
 #    arg3: cookie file
 #    arg4: ignore list file
 #    arg5: current page number
+#    arg6: script directory
 #
 
 function getURLs {
@@ -93,12 +94,21 @@ function getURLs {
 		number="$(echo $img | sed  's .\{29\}  ')"
 		# If not in ignore list
 		if ! cat $4 | grep "$number" >/dev/null; then
-			if [ $DOWNLOAD == 1 ]; then
-				echo "-O" >> $2
-			fi
 			# Save exact image URL
 			# curl -s -b $3 -e "http://wallbase.cc" $img | egrep -o "http:.*(png|jpg)" | egrep "wallbase2|imageshack.us|ovh.net" >> $2
-			curl -s -b $3 -e "http://wallbase.cc" $img | egrep -o "B\('\w+'\)" >> $2
+			code=$(curl -s -b $3 -e "http://wallbase.cc" $img | egrep -o "B\('\w+?'\)")
+			length=${#code}
+			length=$(($length - 5))
+			url=$("$6/wbdecode" ${code:3:$length})
+			# If images need to be downloaded and if the string is not empty
+			# print required parameters for curl
+			if [ -n "$url" ]; then
+				echo "$url" >> $2
+				
+				if [ $DOWNLOAD == 1 ]; then
+					echo "-O" >> $2
+				fi
+			fi
 		fi
 		# Increment imgNum
 		imgNum=$(($imgNum + 1))
@@ -111,6 +121,9 @@ function getURLs {
 #####################
 ###    SCRIPT     ###
 #####################
+
+# Save current dir
+scriptDir=$(pwd)
 
 # Change directory to the specified one
 cd $DIR
@@ -148,7 +161,7 @@ do
 	# Get search page
 	curl -s -b $cookies -d $post -e "http://wallbase.cc" $url/$count > $page
 	# Get URLs
-	getURLs $page $urls $cookies $ignore $pageNum
+	getURLs $page $urls $cookies $ignore $pageNum "$scriptDir"
 	rm $page
 	# Increment pageNum
 	pageNum=$(($pageNum + 1))
