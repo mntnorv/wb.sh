@@ -17,7 +17,7 @@ PASS=
 ### Download options
 DIR=~/Documents/Walls/
 REMOVE_OLD=1
-DOWNLOAD=1
+DOWNLOAD=0
 
 ### Search options
 TYPE=search
@@ -97,7 +97,8 @@ function getURLs {
 				echo "-O" >> $2
 			fi
 			# Save exact image URL
-			curl -s -b $3 -e "http://wallbase.cc" $img | egrep -o "http:.*(png|jpg)" | egrep "wallbase2|imageshack.us|ovh.net" >> $2
+			# curl -s -b $3 -e "http://wallbase.cc" $img | egrep -o "http:.*(png|jpg)" | egrep "wallbase2|imageshack.us|ovh.net" >> $2
+			curl -s -b $3 -e "http://wallbase.cc" $img | egrep -o "B\('\w+'\)" >> $2
 		fi
 		# Increment imgNum
 		imgNum=$(($imgNum + 1))
