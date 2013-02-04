@@ -184,7 +184,9 @@ if [ $DOWNLOAD == 1 ]; then
 fi
 
 # Clean up
-rm $cookies
+if [ $(($PURITY % 10)) == 1 ]; then
+	rm $cookies
+fi
 
 if [ $DOWNLOAD == 1 ]; then
 	rm $urls
