@@ -135,7 +135,14 @@ post=""
 url=""
 
 # Login
-login $USER $PASS $cookies
+if [ $(($PURITY % 10)) == 1 ]; then
+	if [ -z "$USER" -o -z "$PASS" ]; then
+		echo "Error: username or password empty"
+		exit
+	else
+		login $USER $PASS $cookies
+	fi
+fi
 
 echo "Getting URLs:"
 
