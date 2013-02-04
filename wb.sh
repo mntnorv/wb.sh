@@ -3,7 +3,7 @@
 # Download images from wallbase.cc
 #
 # by Mantas Norvaiša
-# 2012
+# 2013
 #
 
 #####################
@@ -73,7 +73,6 @@ function login {
 #    arg3: cookie file
 #    arg4: ignore list file
 #    arg5: current page number
-#    arg6: script directory
 #
 
 function getURLs {
@@ -99,7 +98,7 @@ function getURLs {
 			code=$(curl -s -b $3 -e "http://wallbase.cc" $img | egrep -o "B\('(\w|=|\+|/)+?'\)")
 			length=${#code}
 			length=$(($length - 5))
-			url=$("$6/wbdecode" ${code:3:$length})
+			url=$(echo ${code:3:$length} | base64 -d)
 			# If images need to be downloaded and if the string is not empty
 			# print required parameters for curl
 			if [ -n "$url" ]; then
@@ -121,9 +120,6 @@ function getURLs {
 #####################
 ###    SCRIPT     ###
 #####################
-
-# Save current dir
-scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Change directory to the specified one
 cd $DIR
@@ -161,7 +157,7 @@ do
 	# Get search page
 	curl -s -b $cookies -d $post -e "http://wallbase.cc" $url/$count > $page
 	# Get URLs
-	getURLs $page $urls $cookies $ignore $pageNum "$scriptDir"
+	getURLs $page $urls $cookies $ignore $pageNum
 	rm $page
 	# Increment pageNum
 	pageNum=$(($pageNum + 1))

@@ -3,18 +3,6 @@ wb.sh
 
 A user-friendly wallbase.cc image download script using curl
 
-IMPORTANT
-=========
-
-As of the latest update you need to compile `wbdecode.cpp` to an executable named `wbdecode`.
-
-No special options are needed, you can compile it with:
-```bash
-g++ wbdecode.cpp -o wbdecode
-```
-
-This is needed because wallbase.cc now stores wallpaper URLs encoded and decodes them with Javascript.
-
 Features
 ========
 
