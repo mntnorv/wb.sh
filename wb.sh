@@ -15,12 +15,12 @@ USER=
 PASS=
 
 ### Download options
-DIR=~/walls/
+DIR=~/Documents/Walls/
 REMOVE_OLD=1
 DOWNLOAD=1
 
 ### Search options
-TYPE=random
+TYPE=search
 
 # search
 QUERY=landscape
@@ -95,10 +95,18 @@ function getURLs {
 		img="$(echo $imgURL | sed 's/.\{1\}$//')"
 		# Image number
 		number="$(echo $img | sed  's .\{29\}  ')"
-		# If not in ignore list
-		if ! cat $4 | grep "$number" >/dev/null; then
+		# Download or not
+		dload=true
+		# If ignore file exists
+		if [ -f $4 ]; then
+			# If in ignore list
+			if cat $4 | grep "$number" >/dev/null; then
+				dload=false
+			fi
+		fi
+		# Download only if dload is true
+		if [ $dload == true ]; then
 			# Save exact image URL
-			# curl -s -b $3 -e "http://wallbase.cc" $img | egrep -o "http:.*(png|jpg)" | egrep "wallbase2|imageshack.us|ovh.net" >> $2
 			code=$(curl -s -b $3 -e "http://wallbase.cc" $img | egrep -o "B\('(\w|=|\+|/)+?'\)")
 			length=${#code}
 			length=$(($length - 5))
@@ -162,6 +170,9 @@ elif [ $TYPE == color ]; then
 	post="board=$BOARDS&nsfw=$PURITY&res=$RESOLUTION&res_opt=$RES_OPTION&aspect=$ASPECT_RATIO"
 	post="$post&orderby=$SORT_BY&orderby_opt=$SORT_ORDER&thpp=$IMGS_PER_PAGE"
 	url=http://wallbase.cc/search/color/$COLOR_R/$COLOR_G/$COLOR_B
+elif [ $TYPE == random ]; then
+	post="board=$BOARDS&nsfw=$PURITY&res=$RESOLUTION&res_opt=$RES_OPTION&aspect=$ASPECT_RATIO&thpp=$IMGS_PER_PAGE"
+	url=http://wallbase.cc/random
 fi
 
 # Get all URLs
