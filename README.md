@@ -49,6 +49,7 @@ Search options
 search type
 - `search` - normal search (string)
 - `color` - search by dominating color
+- `random` - choose random images. Can be filtered by purity, boards, resolution and aspect ratio
 
 **QUERY**:
 the string to search for when `TYPE=search`
