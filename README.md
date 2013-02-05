@@ -91,11 +91,11 @@ images per page. Accepted values: `20`, `32`, `40`, `60`
 total number of images to download. Should be a multiple of `IMGS_PER_PAGE`
 
 **RESOLUTION**:
-image resolution. Format: `[number]x[number]`, example: `1920x1080`
+image resolution. Format: `[number]x[number]`, example: `1920x1080`. Use `0` for any resolution
 
 **RES_OPTION**:
 - `gteq` - download images of equal or higher resolution than `RESOLUTION`
 - `eqeq` - download images of resolution equal to `RESOLUTION`
 
 **ASPECT_RATIO**:
-aspect ratio. Example: `1.66`
+aspect ratio. Example: `1.66`. Use `0` for any aspect ratio
