@@ -15,12 +15,12 @@ USER=
 PASS=
 
 ### Download options
-DIR=~/Documents/Walls/
+DIR=~/walls/
 REMOVE_OLD=1
 DOWNLOAD=1
 
 ### Search options
-TYPE=search
+TYPE=random
 
 # search
 QUERY=landscape
@@ -35,6 +35,10 @@ SORT_BY=date
 SORT_ORDER=desc
 IMGS_PER_PAGE=20
 TOTAL_IMGS=20
+
+RESOLUTION=0
+RES_OPTION=gteq
+ASPECT_RATIO=0
 
 #####################
 ###   FUNCTIONS   ###
@@ -151,10 +155,12 @@ pageNum=1
 
 # Save post data and URL
 if [ $TYPE == search ]; then
-	post="query=$QUERY&board=$BOARDS&nsfw=$PURITY&res=0&res_opt=gteq&aspect=0&orderby=$SORT_BY&orderby_opt=$SORT_ORDER&thpp=20&section=wallpapers"
+	post="query=$QUERY&board=$BOARDS&nsfw=$PURITY&res=$RESOLUTION&res_opt=$RES_OPTION&aspect=$ASPECT_RATIO"
+	post="$post&orderby=$SORT_BY&orderby_opt=$SORT_ORDER&thpp=$IMGS_PER_PAGE&section=wallpapers"
 	url=http://wallbase.cc/search
 elif [ $TYPE == color ]; then
-	post="board=$BOARDS&nsfw=$PURITY&res=0&res_opt=gteq&aspect=0&orderby=$SORT_BY&orderby_opt=$SORT_ORDER&thpp=20"
+	post="board=$BOARDS&nsfw=$PURITY&res=$RESOLUTION&res_opt=$RES_OPTION&aspect=$ASPECT_RATIO"
+	post="$post&orderby=$SORT_BY&orderby_opt=$SORT_ORDER&thpp=$IMGS_PER_PAGE"
 	url=http://wallbase.cc/search/color/$COLOR_R/$COLOR_G/$COLOR_B
 fi
 
