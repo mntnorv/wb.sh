@@ -20,7 +20,7 @@ REMOVE_OLD=1
 DOWNLOAD=1
 
 ### Search options
-TYPE=search
+TYPE=top
 
 # search
 QUERY=landscape
@@ -28,6 +28,8 @@ QUERY=landscape
 COLOR_R=64
 COLOR_G=87
 COLOR_B=10
+# toplist
+TOPLIST=1w
 
 PURITY=100
 BOARDS=23
@@ -56,12 +58,12 @@ function login {
 	echo "Logging in..."
 	# Check arguments
 	if [ $# -lt 3 ] || [ $1 == '' ] || [ $2 == '' ]; then
-		echo "Error logging in"
+		echo "Error: failed to log in" 1>&2
 		exit
 	fi
 	# Check login errors
 	if curl -s -c $3 -d "usrname=$1&pass=$2&nopass_email=Type+in+your+e-mail+and+press+enter&nopass=0&1=1" -e "http://wallbase.cc/start/" http://wallbase.cc/user/login | grep "Wrong username or password." > /dev/null; then
-		echo "Error logging in"
+		echo "Error: failed to log in" 1>&2
 		exit
 	fi
 	# Get permission to NSFW
@@ -134,6 +136,11 @@ function getURLs {
 #####################
 
 # Change directory to the specified one
+if [ ! -d "$DIR" ]; then
+	echo "Error: directory \"$DIR\" doesn't exist" 1>&2
+	exit
+fi
+
 cd $DIR
 
 # Files
@@ -145,11 +152,12 @@ ignore=ignore.txt
 # POST and URL
 post=""
 url=""
+urlSuffix=""
 
 # Login
 if [ $(($PURITY % 10)) == 1 ]; then
 	if [ -z "$USER" -o -z "$PASS" ]; then
-		echo "Error: username or password empty"
+		echo "Error: username or password empty" 1>&2
 		exit
 	else
 		login $USER $PASS $cookies
@@ -165,21 +173,32 @@ pageNum=1
 if [ $TYPE == search ]; then
 	post="query=$QUERY&board=$BOARDS&nsfw=$PURITY&res=$RESOLUTION&res_opt=$RES_OPTION&aspect=$ASPECT_RATIO"
 	post="$post&orderby=$SORT_BY&orderby_opt=$SORT_ORDER&thpp=$IMGS_PER_PAGE&section=wallpapers"
-	url=http://wallbase.cc/search
+	url="http://wallbase.cc/search"
+elif [ $TYPE == top ]; then
+	url="http://wallbase.cc/toplist"
+	urlSuffix="$BOARDS/$RES_OPTION/$RESOLUTION/$ASPECT_RATIO/$PURITY/$IMGS_PER_PAGE/$TOPLIST"
 elif [ $TYPE == color ]; then
 	post="board=$BOARDS&nsfw=$PURITY&res=$RESOLUTION&res_opt=$RES_OPTION&aspect=$ASPECT_RATIO"
 	post="$post&orderby=$SORT_BY&orderby_opt=$SORT_ORDER&thpp=$IMGS_PER_PAGE"
-	url=http://wallbase.cc/search/color/$COLOR_R/$COLOR_G/$COLOR_B
+	url="http://wallbase.cc/search/color/$COLOR_R/$COLOR_G/$COLOR_B"
 elif [ $TYPE == random ]; then
 	post="board=$BOARDS&nsfw=$PURITY&res=$RESOLUTION&res_opt=$RES_OPTION&aspect=$ASPECT_RATIO&thpp=$IMGS_PER_PAGE"
-	url=http://wallbase.cc/random
+	url="http://wallbase.cc/random"
 fi
 
 # Get all URLs
-for (( count= 0; count< "$TOTAL_IMGS"; count=count+"$IMGS_PER_PAGE" ));
-do
+for (( count= 0; count< "$TOTAL_IMGS"; count=count+"$IMGS_PER_PAGE" )); do
 	# Get search page
-	curl -s -b $cookies -d $post -e "http://wallbase.cc" $url/$count > $page
+	url="$url/$count"
+	if [ -n "$urlSuffix" ]; then
+		url="$url/$urlSuffix"
+	fi
+
+	if [ -n "$post" ]; then
+		curl -s -b $cookies -d $post -e "http://wallbase.cc" $url > $page
+	else
+		curl -s -b $cookies -e "http://wallbase.cc" $url > $page
+	fi
 	# Get URLs
 	getURLs $page $urls $cookies $ignore $pageNum
 	rm $page

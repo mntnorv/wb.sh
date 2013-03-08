@@ -48,6 +48,7 @@ Search options
 **TYPE**:
 search type
 - `search` - normal search (string)
+- `top` - from toplist
 - `color` - search by dominating color
 - `random` - choose random images. Can be filtered by purity, boards, resolution and aspect ratio
 
@@ -56,6 +57,17 @@ the string to search for when `TYPE=search`
 
 **COLOR_R, COLOR_G, COLOR_B**:
 R G B components of the search color when `TYPE=color`. Accepted values: `0 - 255`
+
+**TOPLIST**:
+the interval to get top images from when `TYPE=top`. Accepted values:
+- `1d` - one day
+- `3d` - three days
+- `1w` - one week
+- `2w` - two weeks
+- `1m` - one month
+- `2m` - two months
+- `3m` - three months
+- `0` - all time
 
 **PURITY**:
 image purity
