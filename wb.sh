@@ -112,11 +112,11 @@ function getURLs {
 			code=$(curl -s -b $3 -e "http://wallbase.cc" $img | egrep -o "B\('(\w|=|\+|/)+?'\)")
 			length=${#code}
 			length=$(($length - 5))
-			url=$(echo ${code:3:$length} | base64 -d)
+			decodedUrl=$(echo ${code:3:$length} | base64 -d)
 			# If images need to be downloaded and if the string is not empty
 			# print required parameters for curl
-			if [ -n "$url" ]; then
-				echo "$url" >> $2
+			if [ -n "$decodedUrl" ]; then
+				echo "$decodedUrl" >> $2
 				
 				if [ $DOWNLOAD == 1 ]; then
 					echo "-O" >> $2
@@ -189,9 +189,9 @@ fi
 # Get all URLs
 for (( count= 0; count< "$TOTAL_IMGS"; count=count+"$IMGS_PER_PAGE" )); do
 	# Get search page
-	url="$url/$count"
+	fullUrl="$url/$count"
 	if [ -n "$urlSuffix" ]; then
-		url="$url/$urlSuffix"
+		fullUrl="$fullUrl/$urlSuffix"
 	fi
 
 	if [ -n "$post" ]; then
