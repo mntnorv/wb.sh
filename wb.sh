@@ -70,7 +70,6 @@ function printUsage {
 	echo " -u, --user USER     wallbase.cc username (required for NSFW)"
 	echo "     --top INTERVAL  Specify a toplist interval"
 	echo " -s, --sort SORT_BY  Specify sort type"
-	echo " -S, --sfw           Safe for work images"
 	echo "     --sort-asc      Ascending sort (default)"
 	echo "     --sort-desc     Descending sort"
 	echo " -t, --type TYPE     Specify query type (required)"
@@ -242,9 +241,55 @@ while [ $# -gt 0 ]; do
 			PASSWORD="$2"
 			shift 2
 			;;
+		'-P' | '--purity' )
+			testArgCount $# 2
+			# TODO: PARSE PURITY ARGS
+			shift 2
+			;;
+		'-q' | '--query' )
+			testArgCount $# 2
+			QUERY="$2"
+			shift 2
+			;;
+		'-r' | '--resolution' )
+			testArgCount $# 2
+			# TODO: PARSE RESOLUTION
+			shift 2
+			;;
+		'--res-at-least' )
+			RES_OPTION=gteq
+			shift 1
+			;;
+		'--res-exact' )
+			RES_OPTION=eqeq
+			shift 1
+			;;
 		'-u' | '--user' )
 			testArgCount $# 2
 			USER="$2"
+			shift 2
+			;;
+		'--top' )
+			testArgCount $# 2
+			TOPLIST="$2"
+			shift 2
+			;;
+		'-s' | '--sort' )
+			testArgCount $# 2
+			SORT_BY="$2"
+			shift 2
+			;;
+		'--sort-asc' )
+			SORT_ORDER=asc
+			shift 1
+			;;
+		'--sort-desc' )
+			SORT_ORDER=desc
+			shift 1
+			;;
+		'-t' | '--type' )
+			testArgCount $# 2
+			TYPE="$2"
 			shift 2
 			;;
 		* )
