@@ -6,9 +6,9 @@
 # 2013
 #
 
-#####################
-###    OPTIONS    ###
-#####################
+#############################
+###    DEFAULT OPTIONS    ###
+#############################
 
 ### Login
 USER=
@@ -20,7 +20,7 @@ REMOVE_OLD=1
 DOWNLOAD=1
 
 ### Search options
-TYPE=top
+TYPE=search
 
 # search
 QUERY=landscape
@@ -36,7 +36,7 @@ BOARDS=23
 SORT_BY=date
 SORT_ORDER=desc
 IMGS_PER_PAGE=20
-TOTAL_IMGS=20
+TOTAL_IMGS=1
 
 RESOLUTION=0
 RES_OPTION=gteq
@@ -45,6 +45,65 @@ ASPECT_RATIO=0
 #####################
 ###   FUNCTIONS   ###
 #####################
+
+#
+# Prints usage
+#
+
+function printUsage {
+	echo "Usage: ./`basename $0` [options...]"
+	echo "Options:"
+	echo "     --aspect ASPECT Specify exact aspect ratio"
+	echo " -b, --boards BOARDS Specify boards to search in"
+	echo " -c, --color COLOR   Specify a color to search for"
+	echo " -d, --directory DIR Directory to download images to. Defaults to current directory."
+	echo "     --do-not-download  Do not download images. Saves image urls to a file."
+	echo "     --leave-old     Leave all images currently in the download directory."
+	echo " -n, --images COUNT  Number of images to download"
+	echo "     --images-per-page COUNT  Number of images per page"
+	echo " -p, --password PASSWORD  wallbase.cc password (required for NSFW)"
+	echo " -P, --purity PURITY Specify image purity"
+	echo " -q, --query QUERY   Specify a query"
+	echo " -r, --resolution RESOLUTION  Specify a resolution"
+	echo "     --res-at-least  Search for a greater or equal resolution"
+	echo "     --res-exact     Search for an exact resolution (default)"
+	echo " -u, --user USER     wallbase.cc username (required for NSFW)"
+	echo "     --top INTERVAL  Specify a toplist interval"
+	echo " -s, --sort SORT_BY  Specify sort type"
+	echo " -S, --sfw           Safe for work images"
+	echo "     --sort-asc      Ascending sort (default)"
+	echo "     --sort-desc     Descending sort"
+	echo " -t, --type TYPE     Specify query type (required)"
+}
+
+#
+# Tests if a string is numeric. If not, prints an error message and
+# stop the execution.
+#   arg1: string
+#
+
+function testIsNumeric {
+	case $1 in
+    	''|*[!0-9]*)
+			echo "Error: \"$1\" is not a number"
+			exit 1
+			;;
+	esac
+}
+
+#
+# Checks argument count. If there are less arguments than is needed
+# usage is printed and execution of this is script is aborted.
+#   arg1: argument count
+#   arg2: required count
+#
+
+function testArgCount {
+	if [ $1 -lt $2 ]; then
+		printUsage
+		exit 0
+	fi
+}
 
 #
 # Login to wallbase.cc and store the cookies
@@ -134,6 +193,66 @@ function getURLs {
 #####################
 ###    SCRIPT     ###
 #####################
+
+# Parse command line options
+while [ $# -gt 0 ]; do
+	case $1 in
+		'--aspect' )
+			testArgCount $# 2
+			ASPECT_RATIO="$2"
+			shift 2
+			;;
+		'-b' | '--boards' )
+			testArgCount $# 2
+			# TODO: PARSE BOARDS
+			shift 2
+			;;
+		'-c' | '--color' )
+			testArgCount $# 2
+			# TODO: PARSE COLORS
+			shift 2
+			;;
+		'-d' | '--directory' )
+			testArgCount $# 2
+			DIR="$2"
+			shift 2
+			;;
+		'--do-not-download' )
+			DOWNLOAD=0
+			shift 1
+			;;
+		'-n' | '--images' )
+			testArgCount $# 2
+			testIsNumeric "$2"
+			TOTAL_IMGS="$2"
+			shift 2
+			;;
+		'--images-per-page' )
+			testArgCount $# 2
+			testIsNumeric "$2"
+			IMGS_PER_PAGE="$2"
+			shift 2
+			;;
+		'--leave-old' )
+			REMOVE_OLD=0
+			shift 1
+			;;
+		'-p' | '--password' )
+			testArgCount $# 2
+			PASSWORD="$2"
+			shift 2
+			;;
+		'-u' | '--user' )
+			testArgCount $# 2
+			USER="$2"
+			shift 2
+			;;
+		* )
+			echo "Error: unrecognised option \"$1\""
+			exit 1
+			;;
+	esac
+done
 
 # Change directory to the specified one
 if [ ! -d "$DIR" ]; then
